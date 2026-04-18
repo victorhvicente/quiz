@@ -1,4 +1,3 @@
-// Seleciona os elementos do HTML que serão usados para exibir perguntas, respostas, botões e resultado final
 const questionContainer = document.getElementById("question-container");
 const questionElement = document.getElementById("question");
 const answerButton = document.getElementById("answer-buttons");
@@ -6,18 +5,15 @@ const nextButton = document.getElementById("next-btn");
 const restartButton = document.getElementById("restart-btn");
 const result = document.getElementById("result");
 
-// Variáveis que serão usadas durante o quiz
 let shuffledQuestions, currentQuestionsIndex, score, shuffledAnswers;
 
-// Função para embaralhar os itens de um array (usada para perguntas e respostas aleatórias)
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]]; // Troca os elementos
+        [array[i], array[j]] = [array[j], array[i]];
     }
 }
 
-// Lista de perguntas e alternativas, organizadas em objetos
 const questions = [
     {
         question: "Qual é a função da tag <head> em um documento HTML?",
@@ -93,32 +89,27 @@ const questions = [
     }
 ];
 
-// Inicia o quiz
 function startQuiz() {
-    score = 0; // Zera a pontuação
-    questionContainer.style.display = "flex"; // Exibe o contêiner de perguntas
-    shuffledQuestions = [...questions].sort(() => Math.random() - 0.5); // Embaralha as perguntas
-    currentQuestionsIndex = 0; // Começa pela primeira pergunta
-    nextButton.classList.remove("hide"); // Mostra o botão "Próximo"
-    restartButton.classList.add("hide"); // Esconde o botão de reiniciar
-    result.classList.add("hide"); // Esconde o resultado final
-    setNextQuestion(); // Carrega a primeira pergunta
+    score = 0;
+    questionContainer.style.display = "flex";
+    shuffledQuestions = [...questions].sort(() => Math.random() - 0.5);
+    currentQuestionsIndex = 0;
+    nextButton.classList.remove("hide");
+    restartButton.classList.add("hide");
+    result.classList.add("hide");
+    setNextQuestion();
 }
 
-// Define e exibe a próxima pergunta
 function setNextQuestion() {
-    resetState(); // Limpa as respostas anteriores
-    showQuestion(shuffledQuestions[currentQuestionsIndex]); // Mostra a nova pergunta
+    resetState();
+    showQuestion(shuffledQuestions[currentQuestionsIndex]);
 }
 
-// Exibe a pergunta e cria os botões de resposta dinamicamente
 function showQuestion(question) {
-    questionElement.innerText = question.question; // Define o texto da pergunta
+    questionElement.innerText = question.question;
 
-    // Embaralha as respostas para exibição aleatória
     shuffledAnswers = [...question.answer].sort(() => Math.random() - 0.5);
 
-    // Cria os elementos de input (radio) e label para cada alternativa
     shuffledAnswers.forEach((answer, index) => {
         const inputGroup = document.createElement("div");
         inputGroup.classList.add("input-group");
@@ -135,22 +126,19 @@ function showQuestion(question) {
 
         inputGroup.appendChild(radio);
         inputGroup.appendChild(label);
-        answerButton.appendChild(inputGroup); // Adiciona o grupo de resposta ao container
+        answerButton.appendChild(inputGroup);
     });
 }
 
-// Limpa as respostas antigas do DOM antes de carregar uma nova pergunta
 function resetState() {
     while (answerButton.firstChild) {
         answerButton.removeChild(answerButton.firstChild);
     }
 }
 
-// Evento do botão "Próximo"
 nextButton.addEventListener("click", () => {
     const selectedAnswer = document.querySelector("input[name='answer']:checked");
 
-    // Verifica se uma resposta foi selecionada
     if (!selectedAnswer) {
         alert("Por favor, selecione uma resposta.");
         return;
@@ -158,31 +146,27 @@ nextButton.addEventListener("click", () => {
 
     const answerIndex = parseInt(selectedAnswer.value);
 
-    // Verifica se a resposta selecionada é correta e soma a pontuação
     if (shuffledAnswers[answerIndex].correto) {
         score++;
     }
 
-    currentQuestionsIndex++; // Avança para a próxima pergunta
+    currentQuestionsIndex++;
 
     if (currentQuestionsIndex < shuffledQuestions.length) {
-        setNextQuestion(); // Carrega a próxima pergunta
+        setNextQuestion();
     } else {
-        endQuiz(); // Finaliza o quiz
+        endQuiz();
     }
 });
 
-// Evento do botão "Reiniciar"
 restartButton.addEventListener("click", startQuiz);
 
-// Mostra o resultado final ao término do quiz
 function endQuiz() {
-    questionContainer.style.display = "none"; // Esconde o container de perguntas
-    nextButton.classList.add("hide"); // Esconde o botão "Próximo"
-    restartButton.classList.remove("hide"); // Mostra o botão de reiniciar
-    result.classList.remove("hide"); // Mostra o resultado final
-    result.innerText = `Sua pontuação final: ${score} / ${shuffledQuestions.length}`; // Mostra pontuação
+    questionContainer.style.display = "none";
+    nextButton.classList.add("hide");
+    restartButton.classList.remove("hide");
+    result.classList.remove("hide");
+    result.innerText = `Sua pontuação final: ${score} / ${shuffledQuestions.length}`;
 }
 
-// Inicia o quiz automaticamente ao carregar a página
 startQuiz();
